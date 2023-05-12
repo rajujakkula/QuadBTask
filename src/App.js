@@ -1,23 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
-
+import "./App.css";
+import { Movies } from "./components/Movies";
+import { MovieOverView } from "./components/MovieOverView";
+import { useEffect, useState } from "react";
 function App() {
+  const [showMovie, setShowMovie] = useState(false);
+  const [data, setData] = useState([]);
+  const [newData, setNewData] = useState();
+
+  useEffect(() => {
+    fetch(" https://api.tvmaze.com/search/shows?q=all")
+      .then((res) => res.json())
+      .then((item) => {
+        console.log(item);
+        setData(item);
+      });
+  }, []);
+
+  const upDateData = (newData) => {
+    setShowMovie(true);
+    console.log(newData);
+    setNewData(newData);
+  };
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {showMovie || <Movies upDateData={upDateData} data={data} />}
+      {showMovie && (
+        <MovieOverView newData={newData} setShowMovie={setShowMovie} />
+      )}
     </div>
   );
 }
